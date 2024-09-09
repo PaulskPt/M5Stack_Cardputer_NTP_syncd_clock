@@ -1,0 +1,7 @@
+#define SECRET_SSID "<Your WiFi SSID here>"
+#define SECRET_PASS "<Your WiFi Password here>"
+#define DEBUG_FLAG "0"
+#define LOCAL_TIME_FLAG "1"
+#define NTP_LOCAL_FLAG "1"
+#define NTP_LOCAL_URL "pt.pool.ntp.org"
+#define TIME_ONLY_FLAG "1"

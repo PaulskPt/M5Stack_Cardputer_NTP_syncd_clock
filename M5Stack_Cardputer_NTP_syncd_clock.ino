@@ -20,9 +20,9 @@
  * o) in dt_handler() added functionality to update only the most frequently changed data: the time. The date and day-of-the-week will only updated when necessary.
  * The measures in r) and s) make the appearance of the display more 'quiet'.
  *
- * Update 2024-09-07. Trial to make it work with a M5 Cardputer (with M5 StampS3)
+ * Update 2024-09-07. Trial to make it work with a M5 Cardputer with external RV3028 (Pimoroni) 
  * M5 Cardputer display 240 x 135 px
- * This sketch has been tested on a M5Cardputer.
+ * This sketch has been tested on a M5Cardputer. It works OK (the sketch still has some minor bugs),
  */
 #include <Arduino.h>
 #include <WiFi.h>
@@ -137,9 +137,9 @@ void setup(void)
   M5Cardputer.Display.setTextDatum(middle_center);
   M5Cardputer.Display.setTextFont(&fonts::FreeSerifBoldItalic18pt7b);
   M5Cardputer.Display.setTextSize(1);
-  M5Cardputer.Display.drawString("Press a Key",
-    dw / 2,
-    dh / 2);
+  //M5Cardputer.Display.drawString("Press a Key",
+  //  dw / 2,
+  //  dh / 2);
 
   Serial.begin(115200);
   Serial.println("\n");
@@ -149,7 +149,7 @@ void setup(void)
   Serial.print("display height: ");
   Serial.println(dh);
 
-  Wire.begin();  // Just to get rid of an error caused in C:\Users\<User>\AppData\Local\Temp\arduino\sketches\...\libraries\M5GFX\lgfx\v1\platforms\esp32\common.cpp.o
+  Wire.begin();  // Just to get rid of an error caused in C:\Users\pauls2\AppData\Local\Temp\arduino\sketches\...\libraries\M5GFX\lgfx\v1\platforms\esp32\common.cpp.o
   
   Serial.print(F("Initializing SD card..."));
   if (!SD.begin(TF_card_CS_pin))
@@ -541,7 +541,7 @@ void disp_msg(String msg, int linenr)
 {
   if (linenr == 1)
   {
-      M5Cardputer.Display.clear(); // Lcd.fillScreen(BLACK);
+      clr_disp_part();
       M5Cardputer.Display.setTextSize(1);
       M5Cardputer.Display.setTextFont(&fonts::FreeSerif9pt7b);
       M5Cardputer.Display.setCursor(0, vert[2]-10);
@@ -782,7 +782,6 @@ void buttonA_wasPressed()
   lRefresh = true;
  } 
 
-boolean use_internal_rtc = true;
 
 void loop() 
 {
@@ -798,23 +797,21 @@ void loop()
     M5Cardputer.update();
     if (M5Cardputer.Keyboard.isChange()) {
       if (M5Cardputer.Keyboard.isKeyPressed('a')) {
-        M5Cardputer.Display.clear();
+        clr_disp_part();
         M5Cardputer.Display.setTextFont(&fonts::FreeSerif9pt7b);
         M5Cardputer.Display.drawString("a Pressed",
           dw / 2,
           dh / 2);
         delay(3000);
-        //M5Cardputer.Display.clear();
         clr_disp_part();
       } else {
-        M5Cardputer.Display.clear();
+        clr_disp_part();
         M5Cardputer.Display.setTextFont(&fonts::FreeSerif9pt7b);
         disp_title();
         M5Cardputer.Display.drawString("Press a Key",
           dw / 2,
           dh / 2);
         delay(3000);
-        //M5Cardputer.Display.clear();
         clr_disp_part();
       }
     }
@@ -833,8 +830,7 @@ void loop()
       if (btnA_state)
         btnA_state = false;
         
-      M5Cardputer.Display.clear();
-      M5Cardputer.Display.setCursor(0,0);
+      clr_disp_part();
       date_old = ""; // trick to force re-displaying of: a) day-of-the-week; b) yy-mo-dd (the time is alway displayed!)
       if (!time_only)
         disp_frame();

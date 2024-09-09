@@ -8,8 +8,9 @@ b) date, time, weekday and time-zone (military) will be shown.
 
 It has the ability to show am and pm, as well as do military time or non military time.
 
-NTP library in this folder: https://github.com/taranais/NTPClient. This library has some modifications by me.
+This sketch reads WiFi credentials, several flags and settings from the file secrets.h.
+The flag ```vars_fm_sd``` (sketch line 119) controls to read variables from file secret.h on SD-card. 
+This flag defaults to false.
 
-@PaulskPt, Github.
-
-
+Source of the NTP library in this folder: https://github.com/taranais/NTPClient. 
+I made some changes to this library

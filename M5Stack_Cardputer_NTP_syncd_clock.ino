@@ -87,7 +87,7 @@ char ntp_url[]= "";
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 String fDate;
 String fDateOld;
-String dayStamp;
+String sDayStamp;
 String sTimeStamp;
 boolean btnA_state = false;
 boolean lRefresh = false;
@@ -582,7 +582,7 @@ void dt_handler(boolean lRefr)
   int height_date = vert[3]-vert[1];
   int height_time = vert[4]-vert[3]+5;
   String TAG = "dt_handler(): ";
-  String sDateStamp, dayStamp, sMonthStamp, sYearStamp = "";
+  String sDateStamp, sDayStamp, sMonthStamp, sYearStamp = "";
   String wd, sYearStampSmall, sTimeStamp, sHourStamp, sMinuteStamp, sSecondStamp = "";
   String hrs,mins,secs = "";
   String tz_ltr = "?";
@@ -609,7 +609,7 @@ void dt_handler(boolean lRefr)
   sYearStamp      = fDate.substring(0, 4);
   sYearStampSmall = fDate.substring(2, 4);
   sMonthStamp     = fDate.substring(splitT-5, splitT-3);      
-  dayStamp       = fDate.substring(splitT-2, splitT);
+  sDayStamp       = fDate.substring(splitT-2, splitT);
 
   sTimeStamp      = fDate.substring(splitT+1, fDate.length()-1);
   sHourStamp      = sTimeStamp.substring(0,2);
@@ -629,21 +629,20 @@ void dt_handler(boolean lRefr)
   
   year   = sYearStamp.toInt();
   month  = sMonthStamp.toInt();
-  day    = dayStamp.toInt();
+  day    = sDayStamp.toInt();
   hour   = sHourStamp.toInt();
   minute = sMinuteStamp.toInt();
   second = sSecondStamp.toInt();
 
-  dayStamp       = day < 10 ? "0" + String(day) : String(day);
+  sDayStamp       = day < 10 ? "0" + String(day) : String(day);
   sMonthStamp     = month < 10 ? "0" + String(month) : String(month);
   sYearStamp      = String(year);
-  sDateStamp      = String(year)+"-"+sMonthStamp+"-"+dayStamp;
+  sDateStamp      = String(year)+"-"+sMonthStamp+"-"+sDayStamp;
   sYearStampSmall = sYearStamp.substring(2, 4);
   sHourStamp      = hour   < 10 ? "0" + String(hour)   : String(hour);
   sMinuteStamp    = minute < 10 ? "0" + String(minute) : String(minute);
   sSecondStamp    = second < 10 ? "0" + String(second) : String(second);
   
-
   boolean isPm = false;
 
   if (use_12hr)
@@ -671,8 +670,8 @@ void dt_handler(boolean lRefr)
   int daysLeft = 0;
   int monthsLeft = 0;
 
-  sTimeStamp = sHourStamp + ":" + sMinuteStamp + ":" + sSecondStamp;    // hh:mm:ss
-  String sDateStamp8 = sYearStampSmall + "-" + sMonthStamp + "-" + dayStamp;            // yy-mo-dd
+  sTimeStamp = sHourStamp + ":" + sMinuteStamp + ":" + sSecondStamp;  // hh:mm:ss
+  String sDateStamp8 = sYearStampSmall + "-" + sMonthStamp + "-" + sDayStamp;  // yy-mo-dd
 
   if (my_debug)
   {
@@ -684,7 +683,6 @@ void dt_handler(boolean lRefr)
   }
   M5Cardputer.Display.setTextFont(&fonts::FreeSerif9pt7b);
   M5Cardputer.Display.setTextSize(1);
-  //M5Cardputer.Display.fillScreen(BLACK);
   
   if (use_12hr)
   {
@@ -760,9 +758,9 @@ void disp_title(void)
   M5Cardputer.Display.print(TITLE);
 }
 
-void disp_time(String sTsm, boolean isPm)
+void disp_time(String sTs, boolean isPm)
 {
-  int le = sizeof(sTsm)/sizeof(sTsm[0]);
+  int le = sizeof(sTs)/sizeof(sTs[0]);
   int h = (dw - le) / 4;
   M5Cardputer.Display.fillRect(0, vert[0]+10, dw-1, dh-1, BLACK); // wipe out the variable time text
   M5Cardputer.Display.setTextColor(YELLOW);
@@ -771,7 +769,7 @@ void disp_time(String sTsm, boolean isPm)
 
   if (use_12hr)
   {
-    M5Cardputer.Display.println(sTsm);
+    M5Cardputer.Display.println(sTs);
     M5Cardputer.Display.setCursor(h, vert[3]+5);
       M5Cardputer.Display.setTextSize(1);
     if (isPm == true)
@@ -781,7 +779,7 @@ void disp_time(String sTsm, boolean isPm)
   }
   else
   {
-    M5Cardputer.Display.println(sTsm);
+    M5Cardputer.Display.println(sTs);
   }
 }
 

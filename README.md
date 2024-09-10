@@ -9,7 +9,7 @@ a) only the time or
 b) date, time, weekday and time-zone (military) will be shown.
 This flag defaults to true.
 
-It has the ability to show am and pm, as well as do military time or non military time.
+The sketch has functionality to show am and pm (controlled by the use_12hr flag) as to show military or non military time style.
 
 This sketch reads WiFi credentials, several flags and settings from the file secrets.h.
 The flag ```vars_fm_sd``` (sketch line 115) controls to read variables from file secret.h on SD-card. 

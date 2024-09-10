@@ -87,8 +87,8 @@ char ntp_url[]= "";
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 String fDate;
 String fDateOld;
-String sDayStamp;
-String sTimeStamp;
+String sDay;
+String sTime;
 boolean btnA_state = false;
 boolean lRefresh = false;
 boolean show_wifi_creds = false;
@@ -114,7 +114,7 @@ int hori[] = {0, 80, 120, 200};
 int vert[] = {20, 45, 70, 95, 120};
 unsigned long t_start = millis();
 
-String sDateStamp8_old = "";
+String sDate8_old = "";
 
 boolean vars_fm_sd = false; // flag: read variables from file secret.h on SD-card 
 // ============================ SETUP =================================================
@@ -582,8 +582,8 @@ void dt_handler(boolean lRefr)
   int height_date = vert[3]-vert[1];
   int height_time = vert[4]-vert[3]+5;
   String TAG = "dt_handler(): ";
-  String sDateStamp, sDayStamp, sMonthStamp, sYearStamp = "";
-  String wd, sYearStampSmall, sTimeStamp, sHourStamp, sMinuteStamp, sSecondStamp = "";
+  String sDate, sDay, sMonth, sYear = "";
+  String wd, sYearSmall, sTime, sHour, sMinute, sSecond = "";
   String hrs,mins,secs = "";
   String tz_ltr = "?";
   boolean use_local_time = local_time_flag;
@@ -605,19 +605,19 @@ void dt_handler(boolean lRefr)
 
   int splitT = fDate.indexOf("T");
   
-  sDateStamp      = fDate.substring(0, splitT);
-  sYearStamp      = fDate.substring(0, 4);
-  sYearStampSmall = fDate.substring(2, 4);
-  sMonthStamp     = fDate.substring(splitT-5, splitT-3);      
-  sDayStamp       = fDate.substring(splitT-2, splitT);
+  sDate      = fDate.substring(0, splitT);
+  sYear      = fDate.substring(0, 4);
+  sYearSmall = fDate.substring(2, 4);
+  sMonth     = fDate.substring(splitT-5, splitT-3);      
+  sDay       = fDate.substring(splitT-2, splitT);
 
-  sTimeStamp      = fDate.substring(splitT+1, fDate.length()-1);
-  sHourStamp      = sTimeStamp.substring(0,2);
-  sMinuteStamp    = sTimeStamp.substring(3,5);
-  sSecondStamp    = sTimeStamp.substring(6,8);
-  weekDay        = timeClient.getDay();
-  wd             = daysOfTheWeek[weekDay];
-  tz_ltr         = timeClient.tz_nato(String(NTP_OFFSET/3600));
+  sTime      = fDate.substring(splitT+1, fDate.length()-1);
+  sHour      = sTime.substring(0,2);
+  sMinute    = sTime.substring(3,5);
+  sSecond    = sTime.substring(6,8);
+  weekDay    = timeClient.getDay();
+  wd         = daysOfTheWeek[weekDay];
+  tz_ltr     = timeClient.tz_nato(String(NTP_OFFSET/3600));
 
   if (!my_debug)
   {
@@ -627,21 +627,21 @@ void dt_handler(boolean lRefr)
     Serial.println("\"\n");
   }
   
-  year   = sYearStamp.toInt();
-  month  = sMonthStamp.toInt();
-  day    = sDayStamp.toInt();
-  hour   = sHourStamp.toInt();
-  minute = sMinuteStamp.toInt();
-  second = sSecondStamp.toInt();
+  year   = sYear.toInt();
+  month  = sMonth.toInt();
+  day    = sDay.toInt();
+  hour   = sHour.toInt();
+  minute = sMinute.toInt();
+  second = sSecond.toInt();
 
-  sDayStamp       = day < 10 ? "0" + String(day) : String(day);
-  sMonthStamp     = month < 10 ? "0" + String(month) : String(month);
-  sYearStamp      = String(year);
-  sDateStamp      = String(year)+"-"+sMonthStamp+"-"+sDayStamp;
-  sYearStampSmall = sYearStamp.substring(2, 4);
-  sHourStamp      = hour   < 10 ? "0" + String(hour)   : String(hour);
-  sMinuteStamp    = minute < 10 ? "0" + String(minute) : String(minute);
-  sSecondStamp    = second < 10 ? "0" + String(second) : String(second);
+  sDay       = day < 10 ? "0" + String(day) : String(day);
+  sMonth     = month < 10 ? "0" + String(month) : String(month);
+  sYear      = String(year);
+  sDate      = String(year)+"-"+sMonth+"-"+sDay;
+  sYearSmall = sYear.substring(2, 4);
+  sHour      = hour   < 10 ? "0" + String(hour)   : String(hour);
+  sMinute    = minute < 10 ? "0" + String(minute) : String(minute);
+  sSecond    = second < 10 ? "0" + String(second) : String(second);
   
   boolean isPm = false;
 
@@ -660,25 +660,25 @@ void dt_handler(boolean lRefr)
   
   if(hour < 10)
   {
-    sHourStamp = "0"+(String)hour;
+    sHour = "0"+(String)hour;
   }
   else
   {
-    sHourStamp = (String)hour;
+    sHour = (String)hour;
   }
 
   int daysLeft = 0;
   int monthsLeft = 0;
 
-  sTimeStamp = sHourStamp + ":" + sMinuteStamp + ":" + sSecondStamp;  // hh:mm:ss
-  String sDateStamp8 = sYearStampSmall + "-" + sMonthStamp + "-" + sDayStamp;  // yy-mo-dd
+  sTime = sHour + ":" + sMinute + ":" + sSecond;  // hh:mm:ss
+  String sDate8 = sYearSmall + "-" + sMonth + "-" + sDay;  // yy-mo-dd
 
   if (my_debug)
   {
-    Serial.print("sDateStamp8: ");
-    Serial.println(sDateStamp8);
-    Serial.print("sTimeStamp:  ");
-    Serial.print(sTimeStamp);
+    Serial.print("sDate8: ");
+    Serial.println(sDate8);
+    Serial.print("sTime:  ");
+    Serial.print(sTime);
     Serial.println("\n");
   }
   M5Cardputer.Display.setTextFont(&fonts::FreeSerif9pt7b);
@@ -688,18 +688,18 @@ void dt_handler(boolean lRefr)
   {
     if (!time_only) 
     {
-      if (sDateStamp8_old != sDateStamp8)
+      if (sDate8_old != sDate8)
       {
-        sDateStamp8_old = sDateStamp8;
+        sDate8_old = sDate8;
         M5Cardputer.Display.fillRect(hori[1], vert[1], dw-5, height_date, BLACK);  // wipe out the variable date text 
         M5Cardputer.Display.setCursor(hori[1], vert[1]+5);
         M5Cardputer.Display.println(wd);
         M5Cardputer.Display.setCursor(hori[1], vert[2]+5);
-        M5Cardputer.Display.println(sDateStamp8);
+        M5Cardputer.Display.println(sDate8);
       }
       M5Cardputer.Display.fillRect(hori[1], vert[3]-10, dw-5, height_time, BLACK); // wipe out the variable time text
       M5Cardputer.Display.setCursor(hori[1], vert[3]+5);
-      M5Cardputer.Display.println(sTimeStamp);
+      M5Cardputer.Display.println(sTime);
       M5Cardputer.Display.setCursor(hori[1], vert[4]+3);
       M5Cardputer.Display.println(tz_ltr);
 
@@ -716,26 +716,26 @@ void dt_handler(boolean lRefr)
     }
     else 
     {
-      disp_time(sTimeStamp, isPm);
+      disp_time(sTime, isPm);
     }
   }
   else  // 24 hr clock
   {
     if (!time_only)
     {
-      if (sDateStamp8_old != sDateStamp8)
+      if (sDate8_old != sDate8)
       {
-        sDateStamp8_old = sDateStamp8;
+        sDate8_old = sDate8;
         M5Cardputer.Display.fillRect(hori[2], vert[1], dw-hori[2], height_date, BLACK);  // wipe out the variable date text
         M5Cardputer.Display.setCursor(hori[2], vert[1]+5);
         M5Cardputer.Display.println(wd);                  // day of the week
         M5Cardputer.Display.setCursor(hori[2], vert[2]+5);
-        M5Cardputer.Display.print(sDateStamp8);  // yy-mo-dd
+        M5Cardputer.Display.print(sDate8);  // yy-mo-dd
       }
       M5Cardputer.Display.setCursor(hori[2], vert[3]+5);
       M5Cardputer.Display.fillRect(hori[2], vert[3]-10, dw-hori[2], height_time, BLACK); // wipe out the variable time text
       M5Cardputer.Display.setCursor(hori[2], vert[3]+5);
-      M5Cardputer.Display.println(sTimeStamp);
+      M5Cardputer.Display.println(sTime);
       M5Cardputer.Display.setCursor(hori[2], vert[4]+3);
       M5Cardputer.Display.println(tz_ltr);
       M5Cardputer.Display.println();   
@@ -743,7 +743,7 @@ void dt_handler(boolean lRefr)
     }
     else 
     {
-      disp_time(sTimeStamp, isPm);
+      disp_time(sTime, isPm);
     }
   }
   delay(950);
@@ -848,7 +848,7 @@ void loop()
         btnA_state = false;
         
       clr_disp_part();
-      sDateStamp8_old = ""; // trick to force re-displaying of: a) day-of-the-week; b) yy-mo-dd (the time is alway displayed!)
+      sDate8_old = ""; // trick to force re-displaying of: a) day-of-the-week; b) yy-mo-dd (the time is alway displayed!)
       if (!time_only)
         disp_frame();
     }

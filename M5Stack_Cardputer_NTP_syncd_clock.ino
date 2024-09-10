@@ -56,8 +56,9 @@ char password[]        = SECRET_PASS;     // Network password (use for WPA, or u
 char debug_flag[]      = DEBUG_FLAG;      // General debug print flag
 char local_time_flag[] = LOCAL_TIME_FLAG; // Defines local_time if true, else gmt
 char ntp_local_flag[]  = NTP_LOCAL_FLAG;  // Defines to use local NTP server or world pool server
-char ntp_local_url[]   = NTP_LOCAL_URL;    // URL of local NTP server pool
-char time_only_flag[]  = TIME_ONLY_FLAG;       // Defines if only time will be shown or all date time
+char ntp_local_url[]   = NTP_LOCAL_URL;   // URL of local NTP server pool
+char time_only_flag[]  = TIME_ONLY_FLAG;  // Defines if only time will be shown or all date time
+char use_12hr_flag[]   = USE_12HR_FLAG;   // defines 12/24hr handling
 #else
 char ssid[]            = "SSID";         // your network SSID (name)
 char password[]        = "password"; // your network password
@@ -66,7 +67,10 @@ char local_time_flag[] = "0";
 char ntp_local_flag[]  = "0";
 char ntp_local_url[]   = "pt.pool.ntp.org";
 char time_only_flag[]  = "1"; 
+char use_12hr_flag[]   = "1";
 #endif
+
+boolean use_12hr = false;  // default: 24hr time
 
 boolean ntp_local = false; // default use worldwide ntp pool
 char ntp_url[]= "";
@@ -338,7 +342,7 @@ boolean rdSecrets(fs::FS &fs, const char * path)
   int n = -1;
   int fnd = 0;
   boolean lFnd, txt_shown = false;
-  const char item_lst[][16] = {"SECRET_SSID", "SECRET_PASS", "DEBUG_FLAG", "LOCAL_TIME_FLAG", "NTP_LOCAL_FLAG", "NTP_LOCAL_URL", "TIME_ONLY_FLAG"};
+  const char item_lst[][16] = {"SECRET_SSID", "SECRET_PASS", "DEBUG_FLAG", "LOCAL_TIME_FLAG", "NTP_LOCAL_FLAG", "NTP_LOCAL_URL", "TIME_ONLY_FLAG", "USE_12HR_FLAG"};
   le = sizeof(item_lst)/sizeof(item_lst[0]);
   
   File file = fs.open(path);
@@ -469,6 +473,18 @@ boolean rdSecrets(fs::FS &fs, const char * path)
                     Serial.println(time_only_flag[0]);
                     Serial.print("time_only = ");
                     Serial.println(time_only);
+                  }
+                }
+                else if (i == 7)
+                {
+                  s2.toCharArray(use_12hr_flag,s2.length()-1);
+                  use_12hr = use_12hr_flag[0] == 1 ? true : false;
+                  if (my_debug)
+                  {
+                    Serial.print("extracted use_12hr_flag: ");
+                    Serial.println(use_12hr_flag[0]);
+                    Serial.print("use_12hr = ");
+                    Serial.println(use_12hr);
                   }
                 }
                 txt_shown = false;
@@ -629,7 +645,6 @@ void dt_handler(boolean lRefr)
   
 
   boolean isPm = false;
-  boolean use_12hr = false;
   int hourNoMilitary;
 
   if (use_12hr)
@@ -716,7 +731,7 @@ void dt_handler(boolean lRefr)
     }
     else 
     {
-      disp_time(timeStampNoMilitary);
+      disp_time(timeStampNoMilitary, isPm);
     }
   }
   else  // 24 hr clock
@@ -743,7 +758,7 @@ void dt_handler(boolean lRefr)
     }
     else 
     {
-      disp_time(timeStampNoMilitary);
+      disp_time(timeStampNoMilitary, isPm);
     }
   }
   delay(950);
@@ -758,7 +773,7 @@ void disp_title(void)
   M5Cardputer.Display.print(TITLE);
 }
 
-void disp_time(String tsm)
+void disp_time(String tsm, boolean isPm)
 {
   int le = sizeof(tsm)/sizeof(tsm[0]);
   int h = (dw - le) / 4;
@@ -766,7 +781,21 @@ void disp_time(String tsm)
   M5Cardputer.Display.setTextColor(YELLOW);
   M5Cardputer.Display.setTextSize(2);
   M5Cardputer.Display.setCursor(h, vert[2]);
-  M5Cardputer.Display.println(tsm);
+
+  if (use_12hr)
+  {
+    M5Cardputer.Display.println(tsm);
+    M5Cardputer.Display.setCursor(h, vert[3]+5);
+      M5Cardputer.Display.setTextSize(1);
+    if (isPm == true)
+      M5Cardputer.Display.println("PM");
+    else
+      M5Cardputer.Display.println("AM");
+  }
+  else
+  {
+    M5Cardputer.Display.println(tsm);
+  }
 }
 
 void clr_disp_part(void)
@@ -793,18 +822,20 @@ void loop()
 
   while (true)
   {
-
     M5Cardputer.update();
     if (M5Cardputer.Keyboard.isChange()) {
-      if (M5Cardputer.Keyboard.isKeyPressed('a')) {
+      if (M5Cardputer.Keyboard.isPressed())
+      {
         clr_disp_part();
         M5Cardputer.Display.setTextFont(&fonts::FreeSerif9pt7b);
-        M5Cardputer.Display.drawString("a Pressed",
+        M5Cardputer.Display.drawString("a key was Pressed",
           dw / 2,
           dh / 2);
         delay(3000);
         clr_disp_part();
-      } else {
+      } 
+      else 
+      {
         clr_disp_part();
         M5Cardputer.Display.setTextFont(&fonts::FreeSerif9pt7b);
         disp_title();
@@ -816,7 +847,8 @@ void loop()
       }
     }
     
-    if(M5Cardputer.BtnA.wasPressed()) {
+    if(M5Cardputer.BtnA.wasPressed()) 
+    {
       M5Cardputer.Speaker.tone(8000, 20);
       buttonA_wasPressed();
     }
@@ -836,7 +868,8 @@ void loop()
         disp_frame();
     }
 
-    if (t_elapsed % 1000 == 0){  // 1000 milliseconds = 1 minute
+    if (t_elapsed % 1000 == 0)  // 1000 milliseconds = 1 minute
+    {
       t_start = t_current;
       lRefresh = true;
     }

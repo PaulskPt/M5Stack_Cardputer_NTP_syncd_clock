@@ -5,3 +5,4 @@
 #define NTP_LOCAL_FLAG "1"
 #define NTP_LOCAL_URL "pt.pool.ntp.org"
 #define TIME_ONLY_FLAG "1"
+#define USE_12HR_FLAG "1"

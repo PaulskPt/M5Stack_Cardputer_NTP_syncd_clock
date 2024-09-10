@@ -6,7 +6,7 @@ written to the internal RTC and be updated onces in an hour or so.
 
 The flag "time_only" controls if:
 a) only the time or 
-b) date, time, weekday and time-zone (military) will be shown.
+b) date, time, weekday and time-zone (military: A-Z) will be shown.
 This flag defaults to true.
 
 The sketch has functionality to show am and pm (controlled by the use_12hr flag).

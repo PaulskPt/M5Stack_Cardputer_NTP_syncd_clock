@@ -3,6 +3,7 @@
 This sketch shows you the current time from an NTP server on the builtin M5Stack Cardputer display.
 Unfortunately the M5Stack StampS3 has no internal RTC otherwise the NTP datetimestamp could be
 written to the internal RTC and be updated onces in an hour or so.
+M5Stack has an external RTC unit, see: [RTC unit](https://shop.m5stack.com/products/real-time-clock-rtc-unit-hym8563).
 
 The flag "time_only" controls if:
 a) only the time or 

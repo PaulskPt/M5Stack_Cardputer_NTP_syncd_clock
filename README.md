@@ -15,5 +15,5 @@ This sketch reads WiFi credentials, several flags and settings from the file sec
 The flag ```vars_fm_sd``` (sketch line 115) controls to read variables from file secret.h on SD-card. 
 This flag defaults to false.
 
-Source of the NTP library in this folder: https://github.com/taranais/NTPClient. 
+Source of the NTP library is here [NTPClient](https://github.com/taranais/NTPClient).
 I made some changes to this library

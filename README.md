@@ -1,4 +1,4 @@
-# M5Stack Cardputer NTP synchronize clock
+# M5Stack Cardputer NTP synchronized clock
 
 This sketch shows you the current time from an NTP server on the builtin M5Stack Cardputer display.
 Unfortunately the M5Stack StampS3 has no internal RTC otherwise the NTP datetimestamp could be
